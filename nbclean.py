@@ -1,23 +1,11 @@
 #!/usr/bin/env python
-def clean_nb(nb):
-    try:
-        del nb.metadata['signature']
-    except KeyError:
-        pass
-
-    for cell in nb.cells:
-        if 'outputs' in cell:
-            cell['outputs'] = []
-        if "execution_count" in cell:
-            cell["execution_count"] = None
-    return nb
-
 if __name__ == '__main__':
-    import io, sys
-    from IPython import nbformat
-    from os.path import splitext
-    from shutil import move
+    from IPython.nbconvert import NotebookExporter, preprocessors
+    import sys
     if len(sys.argv)>1:
+        import io
+        from os.path import splitext
+        from shutil import move
         nbfile = sys.argv[1]
         root, ext = splitext(nbfile)
         dirtyfile = root + '-dirty' + ext
@@ -28,6 +16,7 @@ if __name__ == '__main__':
         infi  = sys.stdin
         outfi = sys.stdout
 
-    nb = nbformat.read(infi,4)
-    nb = clean_nb(nb)
-    nbformat.write(nb, outfi)
+    cop = preprocessors.ClearOutputPreprocessor()
+    exporter = NotebookExporter(preprocessors=[cop])
+    body, _ = exporter.from_file(infi)
+    outfi.write(body)

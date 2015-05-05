@@ -6,15 +6,16 @@ from IPython.utils.text import strip_ansi
 from IPython.display import display
 import json
 
-from nbclean import clean_nb
+from IPython.nbconvert.preprocessors import ClearOutputPreprocessor
 
 fname = sys.argv[1]
 with io.open(fname, encoding='utf-8') as f:
     nb = read(f,4)
-nb = clean_nb(nb)
+#cop = ClearOutputPreprocessor(enabled=True)
+#nb, _ = cop(nb,{})
 
 banners = {
-'initial':  'Initial info ----------------',
+'initial':  'Non-cell info ---------------',
 'heading':  'Heading %d ------------------',
 'markdown': 'Markdown cell ---------------',
 'code':     'Code cell -------------------',
@@ -52,4 +53,4 @@ for cell in cells:
                     print(strip_ansi('\n'.join(output.traceback)))
                 else:
                     print("(Non-plaintext output)")
-        print()
+            print()
