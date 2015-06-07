@@ -23,6 +23,15 @@ banners = {
 'output':   'Output ----------------------',
 }
 
+try:
+    from pygments import lexers, formatters, highlight
+    lexer = lexers.get_lexer_by_name(nb.metadata.language_info.name)
+    formatter = formatters.Terminal256Formatter(style='friendly')
+    my_highlight = lambda x: highlight(x,lexer,formatter)
+except:
+    lexer, formatter = None, None
+    my_highlight = lambda x: x
+
 cells = nb.cells
 del nb['cells']
 print(banners['initial'])
@@ -38,6 +47,8 @@ for cell in cells:
         print(banners[cell.cell_type])
 
     source = cell.source
+    if cell.cell_type == 'code':
+        source = my_highlight(source)
 
     print(source)
     if not source.endswith('\n'):
@@ -48,9 +59,9 @@ for cell in cells:
             print(banners['output'])
             for output in cell.outputs:
                 if 'text' in output:
-                    print(strip_ansi(output.text))
+                    print(output.text)
                 elif 'traceback' in output:
-                    print(strip_ansi('\n'.join(output.traceback)))
+                    print('\n'.join(output.traceback))
                 else:
-                    print("(Non-plaintext output)")
+                    print('(Non-plaintext output)')
             print()
