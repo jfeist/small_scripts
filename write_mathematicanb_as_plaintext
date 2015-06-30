@@ -1,0 +1,11 @@
+#!/Applications/Mathematica.app/Contents/MacOS/MathematicaScript -noprompt -script
+
+infile=$ScriptCommandLine[[2]]
+intxt=Import[infile,"Plaintext"]
+
+letters={\[Alpha],\[Beta],\[Gamma],\[Delta],\[Epsilon],\[CurlyEpsilon],\[Zeta],\[Eta],\[Theta],\[CurlyTheta],\[Iota],\[Kappa],\[CurlyKappa],\[Lambda],\[Mu],\[Nu],\[Xi],\[Omicron],\[CurlyPi],\[Rho],\[CurlyRho],\[Sigma],\[FinalSigma],\[Tau],\[Upsilon],\[Phi],\[CurlyPhi],\[Chi],\[Psi],\[Omega],\[Digamma],\[Koppa],\[Stigma],\[Sampi],\[CapitalAlpha],\[CapitalBeta],\[CapitalGamma],\[CapitalDelta],\[CapitalEpsilon],\[CapitalZeta],\[CapitalEta],\[CapitalTheta],\[CapitalIota],\[CapitalKappa],\[CapitalLambda],\[CapitalMu],\[CapitalNu],\[CapitalXi],\[CapitalOmicron],\[CapitalPi],\[CapitalRho],\[CapitalSigma],\[CapitalTau],\[CapitalUpsilon],\[CurlyCapitalUpsilon],\[CapitalPhi],\[CapitalChi],\[CapitalPsi],\[CapitalOmega],\[CapitalDigamma],\[CapitalKoppa],\[CapitalStigma],\[CapitalSampi],\[CapitalSigma],\[CapitalPi],\[Epsilon],\[Mu],\[CapitalUpsilon],\[FinalSigma],\[Digamma],\[Koppa],\[Stigma],\[Sampi]}
+
+names = ToString /@ FullForm /@ letters
+rules = MapThread[# -> ToString@#2 &, {names, letters}]
+
+WriteString[$Output,StringReplace[intxt, rules]]
