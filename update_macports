@@ -1,0 +1,36 @@
+#!/opt/local/bin/bash
+
+prompt_run () {
+    echo ">> $@" >&2
+    eval "$@"
+}
+
+confirm_run () {
+    prompt="Run '$@'? [Y/n] "
+    read -r -p "$prompt" response
+    response=${response:-y} # yes is default if no answer
+    response=${response,,} # tolower
+    if [[ $response =~ ^(yes|y)$ ]]; then
+        prompt_run "$@"
+    fi
+}
+
+prompt_run sudo port selfupdate
+echo
+prompt_run port outdated
+echo
+confirm_run sudo port upgrade outdated
+echo
+prompt_run port list inactive
+echo
+confirm_run sudo port uninstall inactive
+echo
+prompt_run port echo leaves
+echo
+confirm_run 'while [[ "$(port echo leaves)" ]]; do sudo port uninstall leaves; done'
+echo
+prompt_run cd ~/macports
+echo
+confirm_run ./update_ports.sh
+echo
+prompt_run git st
