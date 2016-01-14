@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 if __name__ == '__main__':
-    from IPython.nbconvert import NotebookExporter, preprocessors
+    from nbconvert import NotebookExporter, preprocessors
     import sys
     if len(sys.argv)>1:
         import io

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import sys, io
-from IPython.nbformat import read
+from nbformat import read
 from IPython.utils.text import strip_ansi
 from IPython.display import display
 import json
 
-from IPython.nbconvert.preprocessors import ClearOutputPreprocessor
+from nbconvert.preprocessors import ClearOutputPreprocessor
 
 fname = sys.argv[1]
 with io.open(fname, encoding='utf-8') as f:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 if __name__ == '__main__':
     import io, sys
-    from IPython import nbformat
+    import nbformat
     useformat = nbformat.current_nbformat
     for nbfile in sys.argv[1:]:
         nb = nbformat.read(nbfile,useformat)
