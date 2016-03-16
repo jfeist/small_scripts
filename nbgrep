@@ -4,7 +4,7 @@
 
 # usage: nbgrep 'pattern'
 
-SEARCHPATH=~/
+SEARCHPATH=.
 
 # 'jq' technique lifted with gratitude
 # from https://gist.github.com/mlgill/5c55253a3bc84a96addf
@@ -20,7 +20,7 @@ if ! type mdfind > /dev/null 2>&1; then
 else
     # mdfind uses OSX's spotlight search, so it's almost instant
     # generate a list of all the ipynb files in any of the directories
-    FILES=$(mdfind -onlyin $SEARCHPATH -name '.ipynb' | grep '.ipynb$')
+    FILES=$(mdfind -onlyin $SEARCHPATH -name '.ipynb' | grep '.ipynb$' | sort)
 fi
 
 # On the command line we get the argument to search for
