@@ -28,7 +28,9 @@ try:
     lexer = lexers.get_lexer_by_name(nb.metadata.language_info.name)
     formatter = formatters.Terminal256Formatter(style='friendly')
     my_highlight = lambda x: highlight(x,lexer,formatter)
-except:
+except Exception as e:
+    print("Error while getting highlighter for notebook: %s:"%type(e).__name__,
+          *e.args,"\n",file=sys.stderr)
     lexer, formatter = None, None
     my_highlight = lambda x: x
 
