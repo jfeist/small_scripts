@@ -64,6 +64,8 @@ for cell in cells:
                     print(output.text)
                 elif 'traceback' in output:
                     print('\n'.join(output.traceback))
+                elif 'data' in output and "text/plain" in output.data:
+                    print(output.data['text/plain'])
                 else:
                     print('(Non-plaintext output)')
             print()
