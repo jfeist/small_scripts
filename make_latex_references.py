@@ -5,6 +5,13 @@ import bibtexparser
 import re
 import sys
 
+etal = False
+if '--etal' in sys.argv:
+    etal=True
+    sys.argv.remove('--etal')
+    #print("etal set to true")
+    assert '--etal' not in sys.argv, 'do not repeat --etal'
+
 # get citations in tex files
 citlines = []
 for fi in sys.argv[1:]:
@@ -15,6 +22,10 @@ cites = set(re.split('[, ]+',", ".join(citlines)))
 def mycustom(record):
     if 'title' in record:
         record['title'] = '{'+record['title']+'}'
+    if etal and 'author' in record:
+        auths = record['author'].split(' and ')
+        if len(auths)>5:
+            record['author'] = auths[0] + ' and others'
     return record
 parser = bibtexparser.bparser.BibTexParser()
 parser.customization = mycustom
