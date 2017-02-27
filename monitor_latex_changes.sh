@@ -18,7 +18,7 @@ done
 main="${all[0]}"
 
 (fswatch $(git ls-files) .git/refs/heads/master | while read fi; do
-    git dwf | fold -s -w 100 | ansi2html.sh --bg=dark > diff.html
+    git dwf | ansi2html.sh --bg=dark | sed 's/<pre>/<pre style="white-space: pre-wrap;">/' > diff.html
     open -g -a Safari diff.html
     echo "new diff!"
 done)&
