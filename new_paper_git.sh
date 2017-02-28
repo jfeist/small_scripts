@@ -6,7 +6,6 @@ if [[ $# == 0 ]]; then
 fi
 
 name="$1"; shift
-ssh jf git init --bare "git/tex/papers/${name}.git"
 mkdir "$name"
 cd "$name"
 git init
@@ -36,5 +35,6 @@ EOF
 git add .gitignore
 git add .gitattributes
 git ci -m 'initial commit with only .gitignore/.gitattributes'
-git remote add jf "jf:git/tex/papers/${name}.git"
+hub create -p "tex.papers.${name}"
+git remote rename origin jf
 git push -u jf master
