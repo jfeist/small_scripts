@@ -836,23 +836,24 @@ allowedsubs = ''.join(s[1] for s in subsuperscripts[1] if s[0]=='_')
 allowedsups = ''.join(s[1] for s in subsuperscripts[1] if s[0]=='^')
 subchain = re.compile(r'_\{([%s]+)\}'%re.escape(allowedsubs))
 supchain = re.compile(r'^\{([%s]+)\}'%re.escape(allowedsups))
+eachchar = re.compile(r'(.)')
 
 def replace(inp):
     # For each match, look-up corresponding value in dictionary
     inp = replacements[0].sub(lambda mo: replacements[1][mo.group(1)], inp)
 
     # expand groups of subscripts: _{01234} -> _0_1_2_3_4
-    inp = subchain.sub(lambda mo: re.sub(r"(.)", r"_\1", mo.group(1)), inp)
+    inp = subchain.sub(lambda mo: eachchar.sub(r"_\1", mo.group(1)), inp)
 
     # expand groups of superscripts: ^{01234} -> ^0^1^2^3^4
-    inp = supchain.sub(lambda mo: re.sub(r"(.)", r"_\1", mo.group(1)), inp)
+    inp = supchain.sub(lambda mo: eachchar.sub(r"_\1", mo.group(1)), inp)
 
     # now replace subsuperscripts
     inp = subsuperscripts[0].sub(lambda mo: subsuperscripts[1][mo.group(1)], inp)
 
     # combining marks (unicode char modifies previous char)
     # the repl function takes the matchobject mo and returns the desired replacement
-    repl = lambda mo: re.sub(r"(.)", r"\1"+combiningmarks[1][mo.group(1)], mo.group(2))
+    repl = lambda mo: eachchar.sub(r"\1"+combiningmarks[1][mo.group(1)], mo.group(2))
     inp = combiningmarks[0].sub(repl, inp)
 
     return inp
