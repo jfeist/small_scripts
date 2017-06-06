@@ -2,7 +2,7 @@
 # Copyright (c) 2010 Sven Kreiss, Kyle Cranmer
 __author__ = "Sven Kreiss <sk@svenkreiss.com>, Kyle Cranmer <kyle.cranmer@nyu.edu>"
 __version__ = "0.6.2"
-import sys, re
+import sys, re, unicodedata
 
 replacements = [
     (r'\textfractionsolidus', '\u2044'),
@@ -862,4 +862,4 @@ if __name__ == "__main__":
     for fi in sys.argv[1:]:
         with open(fi) as f:
             result = replace(f.read())
-            print(result,end='')
+            print(unicodedata.normalize('NFC',result),end='')
