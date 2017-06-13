@@ -31,10 +31,15 @@ parser = bibtexparser.bparser.BibTexParser()
 parser.customization = mycustom
 bib_database = bibtexparser.load(open('/Users/feist/Documents/work/tex/mendeley/library_clean.bib','r'), parser=parser)
 
-# only take references used in paper, and ignore missing ones (bibtex will tell me about those)
+# only take references used in paper
 bib_database.entries = [bib_database.entries_dict[key] for key in cites if key in bib_database.entries_dict]
 # so that entries_dict will be regenerated
 bib_database._entries_dict = {}
+
+missing_entries = cites - set(bib_database.entries_dict.keys())
+missing_entries -=  {'apsrev41Control', 'REVTEX41Control'}
+if missing_entries:
+    print("missing entries in make_latex_references.py:",*(k for k in missing_entries))
 
 # write back to file
 bibtexparser.dump(bib_database,open('references.bib','w'))
