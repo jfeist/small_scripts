@@ -5,5 +5,6 @@
 \gamma γ, \Gamma Γ                \~{O} Õ                        \perp ⊥, \parallel ∥
 \sfrac{3}{5} ⅗                    \therefore ∴, \because ∵       \subset ⊂, \supset ⊃
 a^\int aᶴ, x_\gamma xᵧ            x_+ x₊, x^m xᵐ                 \$ $, \S §, \O Ø, \texteuro €
-\ding{55} ✗, \sqrt[3] ∛           x_{+\gammax} x₊ᵧₓ              x \in (-\infty,\infty) x ∈ (-∞,∞)
+\ding{55} ✗, \sqrt[3] ∛           x_{+\gamma{}x} x₊ᵧₓ              x \in (-\infty,\infty) x ∈ (-∞,∞)
 \acute{e} é \ddot{u} ü \grave{i} ì
+\betator \betator \beta{}tor βtor \alpha\beta αβ \'{o} ó

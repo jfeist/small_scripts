@@ -4,7 +4,10 @@ __author__ = "Sven Kreiss <sk@svenkreiss.com>, Kyle Cranmer <kyle.cranmer@nyu.ed
 __version__ = "0.6.2"
 import sys, re, unicodedata
 
-replacements = [
+class mydict(dict):
+    pass
+
+replacements = mydict([
     (r'\textfractionsolidus', '\u2044'),
     (r'\leftrightsquigarrow', '\u21AD'),
     (r'\textpertenthousand', '\u2031'),
@@ -692,9 +695,9 @@ replacements = [
     (r'\l', '\u0142'),
     (r'\h', '\u210E'),
     (r'\i', '\u2139'),
-]
+])
 
-combiningmarks = [
+combiningmarks = mydict([
     (r'\tilde', '\u0303'),
     (r'\grave', '\u0300'),
     (r'\dot', '\u0307'),
@@ -709,9 +712,9 @@ combiningmarks = [
     (r'\underline', '\u0332'),
     (r'\strikethrough', '\u0335'),
     (r'\bar', '\u0305'),
-]
+])
 
-subsuperscripts = [
+subsuperscripts = mydict([
     (r'_x', '\u2093'),
     (r'_v', '\u1D65'),
     (r'_u', '\u1D64'),
@@ -819,28 +822,28 @@ subsuperscripts = [
     (r'^e', '\u1D49'),
     (r'^f', '\u1DA0'),
     (r'^g', '\u1D4D'),
-]
+])
 
-def makejointregex(tuples):
-    # Create a regular expression  from the dictionary keys
-    dic = dict(tuples)
-    regex = re.compile("(%s)" % "|".join(re.escape(k) for k in dic))
-    return regex, dic
+def addjointregex(dic,pat="(%s)"):
+    # Create a regular expression from the dictionary keys
+    dic.regex = re.compile(pat % "|".join(re.escape(k) for k in dic))
+    return dic
 
-replacements, combiningmarks, subsuperscripts = map(makejointregex,[replacements,combiningmarks,subsuperscripts])
-combiningmarks = (re.compile("%s\{([^\}]+)\}" % combiningmarks[0].pattern), combiningmarks[1])
+addjointregex(replacements  ,pat=r"(%s)({}|(?=[_\W]))")
+addjointregex(combiningmarks,pat=r"(%s)\{([^\}]+)\}")
+addjointregex(subsuperscripts)
 
-for s in subsuperscripts[1]:
+for s in subsuperscripts:
     assert len(s)==2, (s,len(s))
-allowedsubs = ''.join(s[1] for s in subsuperscripts[1] if s[0]=='_')
-allowedsups = ''.join(s[1] for s in subsuperscripts[1] if s[0]=='^')
+allowedsubs = ''.join(s[1] for s in subsuperscripts if s[0]=='_')
+allowedsups = ''.join(s[1] for s in subsuperscripts if s[0]=='^')
 subchain = re.compile(r'_\{([%s]+)\}'%re.escape(allowedsubs))
 supchain = re.compile(r'^\{([%s]+)\}'%re.escape(allowedsups))
 eachchar = re.compile(r'(.)')
 
 def replace(inp):
     # For each match, look-up corresponding value in dictionary
-    inp = replacements[0].sub(lambda mo: replacements[1][mo.group(1)], inp)
+    inp = replacements.regex.sub(lambda mo: replacements[mo.group(1)], inp)
 
     # expand groups of subscripts: _{01234} -> _0_1_2_3_4
     inp = subchain.sub(lambda mo: eachchar.sub(r"_\1", mo.group(1)), inp)
@@ -849,12 +852,12 @@ def replace(inp):
     inp = supchain.sub(lambda mo: eachchar.sub(r"_\1", mo.group(1)), inp)
 
     # now replace subsuperscripts
-    inp = subsuperscripts[0].sub(lambda mo: subsuperscripts[1][mo.group(1)], inp)
+    inp = subsuperscripts.regex.sub(lambda mo: subsuperscripts[mo.group(1)], inp)
 
     # combining marks (unicode char modifies previous char)
     # the repl function takes the matchobject mo and returns the desired replacement
-    repl = lambda mo: eachchar.sub(r"\1"+combiningmarks[1][mo.group(1)], mo.group(2))
-    inp = combiningmarks[0].sub(repl, inp)
+    repl = lambda mo: eachchar.sub(r"\1"+combiningmarks[mo.group(1)], mo.group(2))
+    inp = combiningmarks.regex.sub(repl, inp)
 
     return inp
 
