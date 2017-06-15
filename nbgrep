@@ -35,7 +35,7 @@ do
 
     OUTPUT=$(jq '.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") | .source[]?//.source//.input[]?//.input' $f \
         | sed 's/^"//g;s/"$//g;s/\\n$//g;s/\\"/"/g;s/\\\\/\\/g;s/\\n/\n/g' \
-        | pygmentize-3.5 -l python 2>/dev/null \
+        | pygmentize -l python 2>/dev/null \
         | grep $PATTERN)
 
 
