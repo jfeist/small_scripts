@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-jqprog='((.cells[].outputs | select(.)) |= []) | ((.cells[].execution_count | select(.)) |= null) |
+jqprog='((.cells[].outputs | select(.)) |= []) | ((.cells[].execution_count | select(.)) |= null) | del(.cells[].metadata.ExecuteTime) |
         del(.metadata.widgets) | del(.metadata.toc) | del(.metadata.toc_position) | del(.metadata.nav_menu)'
 
 if [[ "$1" = "--flatten" ]]; then
