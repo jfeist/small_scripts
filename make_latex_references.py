@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import bibtexparser
 import re
 import sys
+import os
+import bibtexparser
 
 etal = False
 if '--etal' in sys.argv:
@@ -12,11 +13,13 @@ if '--etal' in sys.argv:
     #print("etal set to true")
     assert '--etal' not in sys.argv, 'do not repeat --etal'
 
+outdir = os.path.dirname(sys.argv[1])
+
 # get citations in tex files
 citlines = []
 for fi in sys.argv[1:]:
     with open(fi+'.aux','r') as f:
-        citlines.extend([x.replace(r'\citation{','').replace('}\n','') for x in f if (r'\citation' in x)])
+        citlines.extend([x.replace(r'\citation{','').replace('}\n','') for x in f if r'\citation' in x])
 cites = set(re.split('[, ]+',", ".join(citlines)))
 
 def mycustom(record):
@@ -42,4 +45,5 @@ if missing_entries:
     print("missing entries in make_latex_references.py:",*(k for k in missing_entries))
 
 # write back to file
-bibtexparser.dump(bib_database,open('references.bib','w'))
+with open(os.path.join(outdir,'references.bib'),'w') as f:
+    bibtexparser.dump(bib_database,f)
