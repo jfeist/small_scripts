@@ -11,6 +11,8 @@ while [[ $# > 0 ]]; do
     ARG="$1"; shift
     if [[ "$ARG" == "-j" ]]; then
 	journal="$1"; shift
+    elif [[ "$ARG" == "--etal" || "$ARG" == "--arxiv" ]]; then
+	makerefs+=("${ARG}")
     else
 	all+=("${ARG%.tex}")
     fi
@@ -39,7 +41,7 @@ done)&
         done
         [[ $allold == "yes" ]] && break || sleep 1
     done
-    make_latex_references.py "${all[@]}"
+    make_latex_references.py "${makerefs[@]}" "${all[@]}"
     echo "new references!"
 done)&
 
