@@ -5,12 +5,11 @@ if [[ $# == 0 ]]; then
     exit 1
 fi
 
-main=""
-journal=PRL
+journal=""
 while [[ $# > 0 ]]; do
     ARG="$1"; shift
     if [[ "$ARG" == "-j" ]]; then
-	journal="$1"; shift
+	journal="-j $1"; shift
     elif [[ "$ARG" == "--etal" || "$ARG" == "--arxiv" ]]; then
 	makerefs+=("${ARG}")
     else
@@ -26,7 +25,7 @@ main="${all[0]}"
 done)&
 
 (fswatch "$main.tex" | while read fi; do
-    apslen=$(aps-length -j "$journal" -f identify "$main.tex")
+    apslen=$(aps-length $journal -f identify "$main.tex")
     echo "$apslen"
     notif=$(echo "$apslen" | grep currently)
     osascript -e "display notification \"${notif}\" with title \"aps-length\""
