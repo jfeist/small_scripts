@@ -34,3 +34,10 @@ echo
 confirm_run ./update_ports.sh
 echo
 prompt_run git st
+
+
+cd
+echo
+confirm_run sudo tlmgr update --all
+echo
+confirm_run conda update --all
