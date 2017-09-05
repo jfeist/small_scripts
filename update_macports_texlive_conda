@@ -38,6 +38,8 @@ prompt_run git st
 
 cd
 echo
+confirm_run sudo tlmgr update --self
+echo
 confirm_run sudo tlmgr update --all
 echo
 confirm_run conda update --all
