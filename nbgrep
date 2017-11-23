@@ -20,18 +20,22 @@ function finder {
 
 # Use 'jq' to filter out only the source in code cells
 function nbflatsource {
-    jq -r '.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") |
-           .source[]?//.source//.input[]?//.input | gsub("\n";"")?' "$@"
+    jq -r '(.metadata.kernelspec | if (.language|length)>0 then .language else "python" end),
+           (.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") |
+           .source[]?//.source//.input[]?//.input | gsub("\n";"")?)' \
+           "$@"
 }
 
 # loop over all files - empty string as separator corresponds to \0,
 # since bash strings are null-terminated
 finder | while IFS='' read -d '' f; do
-    CONTENT=$(nbflatsource "$f")
+    FLAT=$(nbflatsource "$f")
+    LANGUAGE=$(head -1 <<< "$FLAT")
+    CONTENT=$(tail -n +2 <<< "$FLAT")
     if grep -q "$PATTERN" <<< "$CONTENT"; then
         # if pattern is in the output, colorize full output with pygmentize,
         # giving it the most context possible to guess the language and get the colors right
-        OUTPUT=$(pygmentize -g <<< "$CONTENT" | grep "$PATTERN")
+        OUTPUT=$((pygmentize -l "$LANGUAGE" 2>/dev/null || cat) <<< "$CONTENT" | grep "$PATTERN")
         # and finally, print the matching lines
         echo -e "${f#$PWD/}\n\n$OUTPUT\n\n"
     fi
