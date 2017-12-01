@@ -9,32 +9,31 @@ PATTERN=$1
 # creates a null-separated list of all ipython notebooks in the current directory tree
 function finder {
     if hash mdfind 2> /dev/null; then
-        # mdfind uses OSX's spotlight search, so it's almost instant
+        # mdfind uses macOS's spotlight search, so it's almost instant
         mdfind -onlyin . 'kMDItemFSName == *.ipynb' -0 | sort -z
     else
-        # Use find from findutils, with $PWD instead of . so that we get
-        # absolute path output (like mdfind)
+        # Use find with $PWD to get absolute path output (like mdfind)
         find "$PWD" -name '*.ipynb' -print0
     fi
 }
 
-# Use 'jq' to filter out only the source in code cells
-function nbflatsource {
-    jq -r '(.metadata.kernelspec | if (.language|length)>0 then .language else "python" end),
-           (.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") |
-           .source[]?//.source//.input[]?//.input | gsub("\n";"")?)' \
-           "$@"
-}
+# jq script to filter out the best guess for the language, and the source in code cells
+read -r -d '' NBFLATSOURCE <<EOF
+(.metadata | (.language_info | .pygments_lexer?//.name) //
+             (.kernelspec | if (.language|length)>0 then .language else "python" end)),
+(.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") |
+        .source[]?//.source//.input[]?//.input | gsub("\n";"")?)
+EOF
 
 # loop over all files - empty string as separator corresponds to \0,
 # since bash strings are null-terminated
 finder | while IFS='' read -d '' f; do
-    FLAT=$(nbflatsource "$f")
-    LANGUAGE=$(head -1 <<< "$FLAT")
-    CONTENT=$(tail -n +2 <<< "$FLAT")
+    FLAT=$(jq -r "$NBFLATSOURCE" "$f")
+    LANGUAGE="${FLAT%%$'\n'*}" # this gets the first line of the variable
+    CONTENT="${FLAT#*$'\n'}"   # this gets all but the first line
     if grep -q "$PATTERN" <<< "$CONTENT"; then
         # if pattern is in the output, colorize full output with pygmentize,
-        # giving it the most context possible to guess the language and get the colors right
+        # giving it the most context possible to get the colors right
         OUTPUT=$((pygmentize -l "$LANGUAGE" 2>/dev/null || cat) <<< "$CONTENT" | grep "$PATTERN")
         # and finally, print the matching lines
         echo -e "${f#$PWD/}\n\n$OUTPUT\n\n"
