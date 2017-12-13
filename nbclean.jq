@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 jqprog='((.cells[].outputs | select(.)) |= []) | ((.cells[].execution_count | select(.)) |= null) | del(.cells[].metadata.ExecuteTime) |
-        del(.metadata.widgets) | del(.metadata.toc) | del(.metadata.toc_position) | del(.metadata.nav_menu)'
+        del(.metadata.widgets) | del(.metadata.toc) | del(.metadata.toc_position) | del(.metadata.nav_menu) | del(.metadata.varInspector)'
 
 if [[ "$1" = "--flatten" ]]; then
     shift
