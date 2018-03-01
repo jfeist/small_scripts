@@ -31,11 +31,14 @@ finder | while IFS='' read -d '' f; do
     FLAT=$(jq -r "$NBFLATSOURCE" "$f")
     LANGUAGE="${FLAT%%$'\n'*}" # this gets the first line of the variable
     CONTENT="${FLAT#*$'\n'}"   # this gets all but the first line
-    if grep -q "$PATTERN" <<< "$CONTENT"; then
+    # print matching line numbers in a format that we can use for sed
+    MATCHLINES=$(awk "/$PATTERN/"'{printf "%sp;", FNR}' <<< "$CONTENT")
+    if [[ -n $MATCHLINES ]]; then
         # if pattern is in the output, colorize full output with pygmentize,
-        # giving it the most context possible to get the colors right
-        OUTPUT=$((pygmentize -l "$LANGUAGE" 2>/dev/null || cat) <<< "$CONTENT" | grep "$PATTERN")
-        # and finally, print the matching lines
-        echo -e "${f#$PWD/}\n\n$OUTPUT\n\n"
+        # giving it the most context possible to get the colors right,
+        # and then take the lines that matched
+        echo -e "${f#$PWD/}:\n"
+        (pygmentize -l "$LANGUAGE" 2>/dev/null || cat) <<< "$CONTENT" | sed -n $MATCHLINES
+        echo -e "\n"
     fi
 done
