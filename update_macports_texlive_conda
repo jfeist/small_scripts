@@ -40,4 +40,6 @@ cd
 echo
 confirm_run sudo tlmgr update --self --all
 echo
+confirm_run conda update -n base --all
+echo
 confirm_run conda update --all
