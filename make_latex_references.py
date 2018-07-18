@@ -5,6 +5,7 @@ import re
 import sys
 import os
 import bibtexparser
+import pickle
 
 for flag in 'etal', 'arxiv':
     locals()[flag] = False
@@ -33,13 +34,14 @@ def mycustom(record):
     if arxiv and 'eprint' in record:
         record['journal'] = 'arXiv:'+record['eprint']
     return record
-parser = bibtexparser.bparser.BibTexParser()
-parser.customization = mycustom
-bib_database = bibtexparser.load(open('/Users/feist/Documents/work/tex/mendeley/library_clean.bib','r'), parser=parser)
 
-# only take references used in paper
-bib_database.entries = [bib_database.entries_dict[key] for key in cites if key in bib_database.entries_dict]
-# so that entries_dict will be regenerated
+# load pickled bibtex database
+with open('/Users/feist/Documents/work/tex/mendeley/library_clean.pickle','rb') as f:
+    bib_database = pickle.load(f)
+
+# only take references used in paper and apply the transformations we want
+db = bib_database.entries_dict
+bib_database.entries = [mycustom(db[key]) for key in cites if key in db]
 bib_database._entries_dict = {}
 
 missing_entries = cites - set(bib_database.entries_dict.keys())
@@ -47,6 +49,6 @@ missing_entries -=  {'apsrev41Control', 'REVTEX41Control', 'achemso-control'}
 if missing_entries:
     print("missing entries in make_latex_references.py:",*(k for k in missing_entries))
 
-# write back to file
+# write to file
 with open(os.path.join(outdir,'references.bib'),'w') as f:
     bibtexparser.dump(bib_database,f)
