@@ -47,7 +47,7 @@ bib_database._entries_dict = {}
 missing_entries = cites - set(bib_database.entries_dict.keys())
 missing_entries -=  {'apsrev41Control', 'REVTEX41Control', 'achemso-control'}
 if missing_entries:
-    print("missing entries in make_latex_references.py:",*(k for k in missing_entries))
+    print("missing entries in make_latex_references.py:",*sorted(missing_entries))
 
 # write to file
 with open(os.path.join(outdir,'references.bib'),'w') as f:
