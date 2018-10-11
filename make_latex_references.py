@@ -25,6 +25,7 @@ for fi in sys.argv[1:]:
 cites = set(re.split('[, ]+',", ".join(citlines)))
 
 def mycustom(record):
+    record.pop('abstract',None)
     if 'title' in record:
         record['title'] = '{'+record['title']+'}'
     if etal and 'author' in record:
@@ -33,6 +34,9 @@ def mycustom(record):
             record['author'] = auths[0] + ' and others'
     if arxiv and 'eprint' in record:
         record['journal'] = 'arXiv:'+record['eprint']
+    if 'keywords' in record:
+        keywords = record['keywords'].split(',')
+        record['keywords'] = ','.join(sorted(keywords,key=lambda s: s.casefold()))
     return record
 
 # load pickled bibtex database
