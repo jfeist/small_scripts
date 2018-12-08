@@ -40,7 +40,7 @@ def mycustom(record):
     return record
 
 # load pickled bibtex database
-with open('/Users/feist/Documents/work/tex/mendeley/library_clean.pickle','rb') as f:
+with open('/Users/feist/Documents/work/tex/bibliography/library_clean.pickle','rb') as f:
     bib_database = pickle.load(f)
 
 # only take references used in paper and apply the transformations we want

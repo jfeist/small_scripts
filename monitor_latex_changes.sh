@@ -31,7 +31,7 @@ done)&
     osascript -e "display notification \"${notif}\" with title \"aps-length\""
 done)&
 
-(fswatch "${all[@]/%/.tex}" /Users/feist/Documents/work/tex/mendeley/library_clean.bib | while read fi; do
+(fswatch "${all[@]/%/.tex}" /Users/feist/Documents/work/tex/bibliography/library_clean.pickle | while read fi; do
     # sleep until aux files are more than 1 second old, i.e., latexmk has really finished with them
     while :; do
         allold="yes"
