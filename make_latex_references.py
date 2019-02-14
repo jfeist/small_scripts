@@ -49,7 +49,7 @@ bib_database.entries = [mycustom(db[key]) for key in cites if key in db]
 bib_database._entries_dict = {}
 
 missing_entries = cites - set(bib_database.entries_dict.keys())
-missing_entries -=  {'apsrev41Control', 'REVTEX41Control', 'achemso-control'}
+missing_entries -=  {'apsrev41Control', 'REVTEX41Control', 'apsrev42Control', 'REVTEX42Control', 'achemso-control'}
 if missing_entries:
     print("missing entries in make_latex_references.py:",*sorted(missing_entries))
 
