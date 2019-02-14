@@ -19,10 +19,10 @@ function finder {
 
 # jq script to filter out the best guess for the language, and the source in code cells
 read -r -d '' NBFLATSOURCE <<EOF
-(.metadata | (.language_info | .pygments_lexer?//.name) //
+(.metadata | (.language_info | .pygments_lexer? // .name) //
              (.kernelspec | if (.language|length)>0 then .language else "python" end)),
-(.worksheets[]?.cells[]?//.cells[]? | select(.cell_type=="code") |
-        .source[]?//.source//.input[]?//.input | gsub("\n";"")?)
+(.worksheets[]?.cells[]? // .cells[]? | select(.cell_type=="code") |
+        .source[]? // .source // .input[]? // .input | gsub("\n";"")?)
 EOF
 
 # loop over all files - empty string as separator corresponds to \0,
