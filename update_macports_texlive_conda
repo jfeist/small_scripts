@@ -21,7 +21,7 @@ prompt_run port outdated
 echo
 confirm_run sudo port upgrade outdated
 echo
-prompt_run port list inactive
+prompt_run port installed inactive
 echo
 confirm_run sudo port uninstall inactive
 echo
