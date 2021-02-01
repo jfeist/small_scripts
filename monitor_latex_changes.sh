@@ -36,7 +36,7 @@ done)&
     while :; do
         allold="yes"
         for fi in "${all[@]/%/.aux}"; do
-            [[ $((`date +%s` - `stat -f %m -t %s "$fi"`)) -le 1 ]] && allold="no"
+            [[ $((`date +%s` - `stat -c %Y "$fi"`)) -le 1 ]] && allold="no"
         done
         [[ $allold == "yes" ]] && break || sleep 1
     done
