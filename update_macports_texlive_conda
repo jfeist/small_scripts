@@ -40,6 +40,6 @@ cd
 echo
 confirm_run sudo tlmgr update --self --all
 echo
-confirm_run conda update -n base --all
+confirm_run mamba update --strict-channel-priority -n base --all
 echo
-confirm_run conda update --all
+confirm_run mamba update --strict-channel-priority --all
