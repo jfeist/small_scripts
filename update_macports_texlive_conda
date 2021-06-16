@@ -1,4 +1,5 @@
-#!/opt/local/bin/bash
+#!/bin/zsh -i
+# -i ensures that "omz" function from oh-my-zsh is available
 
 prompt_run () {
     echo ">> $@" >&2
@@ -7,14 +8,17 @@ prompt_run () {
 
 confirm_run () {
     prompt="Run '$@'? [Y/n] "
-    read -r -p "$prompt" response
-    response=${response:-y} # yes is default if no answer
-    response=${response,,} # tolower
-    if [[ $response =~ ^(yes|y)$ ]]; then
-        prompt_run "$@"
-    fi
+    typeset -l response # forces $response to be lower-case in zsh
+    read "response?$prompt"
+    case "$response" in
+	y|yes|"")
+	    prompt_run "$@"
+	    ;;
+    esac
 }
 
+prompt_run omz update
+echo
 prompt_run sudo port selfupdate
 echo
 prompt_run port outdated
