@@ -37,4 +37,4 @@ git add .gitattributes
 git ci -m 'initial commit with only .gitignore/.gitattributes'
 hub create -p "tex.papers.${name}"
 git remote rename origin jf
-git push -u jf master
+git push -u jf main
