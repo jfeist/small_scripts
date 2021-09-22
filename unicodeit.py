@@ -862,7 +862,11 @@ def replace(inp):
     return inp
 
 if __name__ == "__main__":
-    for fi in sys.argv[1:]:
-        with open(fi) as f:
-            result = replace(f.read())
-            print(unicodedata.normalize('NFC',result),end='')
+    if len(sys.argv)==1:
+        result = replace(sys.stdin.read())
+        print(unicodedata.normalize('NFC',result),end='')
+    else:
+        for fi in sys.argv[1:]:
+            with open(fi) as f:
+                result = replace(f.read())
+                print(unicodedata.normalize('NFC',result),end='')
