@@ -25,29 +25,6 @@ prompt_run brew autoremove --dry-run
 echo
 confirm_run brew autoremove
 echo
-prompt_run sudo port selfupdate
-echo
-prompt_run port outdated
-echo
-confirm_run sudo port upgrade outdated
-echo
-prompt_run port installed inactive
-echo
-confirm_run sudo port uninstall inactive
-echo
-prompt_run port echo leaves
-echo
-confirm_run 'while [[ "$(port echo leaves)" ]]; do sudo port uninstall leaves; done'
-echo
-prompt_run cd ~/macports
-echo
-confirm_run ./update_ports.sh
-echo
-prompt_run git st
-
-
-cd
-echo
 confirm_run sudo tlmgr update --self --all
 echo
 confirm_run mamba update --strict-channel-priority -n base --all
