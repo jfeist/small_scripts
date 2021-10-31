@@ -19,6 +19,12 @@ confirm_run () {
 
 prompt_run omz update
 echo
+prompt_run brew upgrade
+echo
+prompt_run brew autoremove --dry-run
+echo
+confirm_run brew autoremove
+echo
 prompt_run sudo port selfupdate
 echo
 prompt_run port outdated

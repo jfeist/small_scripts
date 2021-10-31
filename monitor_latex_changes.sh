@@ -1,4 +1,4 @@
-#!/opt/local/bin/bash
+#!/bin/zsh
 
 if [[ $# == 0 ]]; then
     echo usage: "$0 main_tex_file extra_tex_files (supplemental etc)"
