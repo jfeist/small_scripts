@@ -26,14 +26,19 @@ cites = set(re.split('[, ]+',", ".join(citlines)))
 
 def mycustom(record):
     record.pop('abstract',None)
+    record.pop('file',None)
     if 'title' in record:
         record['title'] = '{'+record['title']+'}'
     if etal and 'author' in record:
         auths = record['author'].split(' and ')
         if len(auths)>5:
             record['author'] = auths[0] + ' and others'
-    if arxiv and 'eprint' in record:
-        record['journal'] = 'arXiv:'+record['eprint']
+    if 'eprint' in record:
+        if arxiv:
+            record['journal'] = 'arXiv:'+record['eprint']
+        elif 'journal' not in record and 'booktitle' not in record:
+            # for revtex42
+            record['ENTRYTYPE'] = 'unpublished'
     if 'keywords' in record:
         keywords = record['keywords'].split(',')
         record['keywords'] = ','.join(sorted(keywords,key=lambda s: s.casefold()))
