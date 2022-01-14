@@ -31,6 +31,8 @@ def indent(text, amount, ch=' '):
 
 printind22 = lambda text: print(indent(text,22))
 
+pageshift = int(os.getenv("PDF_PAGESHIFT",0))
+
 def main():
     input_filename = sys.argv[1]
     document = Poppler.Document.load(input_filename)
@@ -46,7 +48,7 @@ def main():
                 n_annots += 1
                 contents = annot.contents()
                 annottype = type(annot).__name__.replace("Annotation","")
-                printind22(f'{bcolors.OKBLUE}page {i+1:3d}, {annottype:>10s}{bcolors.ENDC}: {fill(contents,100)}')
+                printind22(f'{bcolors.OKBLUE}page {i+1+pageshift:3d}, {annottype:>10s}{bcolors.ENDC}: {fill(contents,100)}')
                 if isinstance(annot,Poppler.HighlightAnnotation):
                     quads = annot.highlightQuads()
                     txt = " ".join([page.text(scaleQ(quad)).strip() for quad in quads])
