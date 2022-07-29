@@ -3,7 +3,7 @@
 import os, sys
 
 # workaround for a problem with Qt5 wrongly checking macOS 11 version
-if not os.getenv("SYSTEM_VERSION_COMPAT") == "0":
+if sys.platform.startswith("darwin") and not os.getenv("SYSTEM_VERSION_COMPAT") == "0":
     os.environ["SYSTEM_VERSION_COMPAT"] = "0"
     import subprocess
     proc = subprocess.run(sys.argv)
@@ -42,6 +42,10 @@ def main():
         page = document.page(i)
         scaleP = lambda P: QPointF(P.x() * page.pageSize().width(), P.y() * page.pageSize().height())
         scaleQ = lambda Q: QRectF(scaleP(Q.points[0]),scaleP(Q.points[2]))
+        def printhighlightedtext(annot):
+            quads = annot.highlightQuads()
+            txt = " ".join([page.text(scaleQ(quad)).strip() for quad in quads])
+            printind22(f'    {bcolors.OKGREEN}highlighted text:{bcolors.ENDC} {fill(txt,100)}')
 
         for annot in page.annotations():
             if not isinstance(annot,Poppler.LinkAnnotation):
@@ -50,9 +54,10 @@ def main():
                 annottype = type(annot).__name__.replace("Annotation","")
                 printind22(f'{bcolors.OKBLUE}page {i+1+pageshift:3d}, {annottype:>10s}{bcolors.ENDC}: {fill(contents,100)}')
                 if isinstance(annot,Poppler.HighlightAnnotation):
-                    quads = annot.highlightQuads()
-                    txt = " ".join([page.text(scaleQ(quad)).strip() for quad in quads])
-                    printind22(f'    {bcolors.OKGREEN}highlighted text:{bcolors.ENDC} {fill(txt,100)}')
+                    printhighlightedtext(annot)
+                elif isinstance(annot,Poppler.CaretAnnotation):
+                    for an in annot.revisions():
+                        printhighlightedtext(an)
                 print()
 
     # if n_annots > 0:
