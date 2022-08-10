@@ -13,4 +13,4 @@ export GITSTATUS_LOG_LEVEL=NONE
 rsync -avz "${PDFFILE}" escape:
 ssh escape "zsh -ic '$SSHCMD'" &> /dev/null
 rsync -avz escape:annot.html .
-ssh escape "rm '$PDFFILE'"
+ssh escape "rm '$PDFFILE' annot.html"
