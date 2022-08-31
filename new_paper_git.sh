@@ -7,7 +7,7 @@ fi
 
 name="$1"; shift
 
-gh repo create -y --gitignore TeX --private "tex.papers.${name}"
+gh repo create --clone --gitignore TeX --private "tex.papers.${name}"
 mv "tex.papers.${name}" "$name"
 cd "$name"
 
