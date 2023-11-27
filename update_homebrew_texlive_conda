@@ -6,16 +6,22 @@ prompt_run () {
     eval "$@"
 }
 
-confirm_run () {
-    prompt="Run '$@'? [Y/n] "
-    typeset -l response # forces $response to be lower-case in zsh
-    read "response?$prompt"
-    case "$response" in
-	y|yes|"")
-	    prompt_run "$@"
-	    ;;
-    esac
-}
+if [[ "$1" == "--run-all" ]]; then
+    confirm_run () {
+        prompt_run "$@"
+    }
+else
+    confirm_run () {
+        prompt="Run '$@'? [Y/n] "
+        typeset -l response # forces $response to be lower-case in zsh
+        read "response?$prompt"
+        case "$response" in
+        y|yes|"")
+            prompt_run "$@"
+            ;;
+        esac
+    }
+fi
 
 prompt_run omz update
 echo
