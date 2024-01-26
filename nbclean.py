@@ -17,6 +17,7 @@ if __name__ == '__main__':
         outfi = sys.stdout
 
     cop = preprocessors.ClearOutputPreprocessor()
-    exporter = NotebookExporter(preprocessors=[cop])
+    cmd = preprocessors.ClearMetadataPreprocessor()
+    exporter = NotebookExporter(preprocessors=[cop,cmd])
     body, _ = exporter.from_file(infi)
     outfi.write(body)
