@@ -6,6 +6,9 @@ import sys
 import os
 import bibtexparser
 import pickle
+from colorama import Fore, Style
+
+warn_str = Fore.YELLOW + Style.BRIGHT + "WARNING:" + Style.RESET_ALL
 
 for flag in 'etal', 'arxiv':
     locals()[flag] = False
@@ -14,6 +17,13 @@ for flag in 'etal', 'arxiv':
         sys.argv.remove('--'+flag)
         #print(flag,"set to true")
         assert '--'+flag not in sys.argv, 'do not repeat --'+flag
+
+refbib = None
+for arg in sys.argv[1:]:
+    if arg.startswith('--refbib='):
+        sys.argv.remove(arg)
+        assert refbib is None, 'do not repeat --refbib'
+        refbib = arg.split('=',1)[1]
 
 outdir = os.path.dirname(sys.argv[1])
 
@@ -53,10 +63,21 @@ db = bib_database.entries_dict
 bib_database.entries = [mycustom(db[key]) for key in cites if key in db]
 bib_database._entries_dict = {}
 
+if refbib:
+    with open(refbib) as f:
+        refbibdb = bibtexparser.load(f)
+    # this will merge the two bibtex files, with refbibdb having precedence
+    for entry in bib_database.entries:
+        if entry["ID"] not in refbibdb.entries_dict:
+            refbibdb.entries.append(entry)
+        else:
+            print(warn_str, f"entry already in reference bibliograph {refbib}:", entry["ID"])
+    bib_database = refbibdb
+
 missing_entries = cites - set(bib_database.entries_dict.keys())
 missing_entries -=  {'apsrev41Control', 'REVTEX41Control', 'apsrev42Control', 'REVTEX42Control', 'achemso-control'}
 if missing_entries:
-    print("missing entries in make_latex_references.py:",*sorted(missing_entries))
+    print(warn_str, "missing entries in make_latex_references.py:", *sorted(missing_entries))
 
 # write to file
 with open(os.path.join(outdir,'references.bib'),'w') as f:
