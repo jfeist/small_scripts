@@ -37,6 +37,7 @@ cites = set(re.split('[, ]+',", ".join(citlines)))
 def mycustom(record):
     record.pop('abstract',None)
     record.pop('file',None)
+    record.pop('annotation',None)
     if 'title' in record:
         record['title'] = '{'+record['title']+'}'
     if etal and 'author' in record:
@@ -60,18 +61,21 @@ with open('/Users/feist/Documents/work/tex/bibliography/library_clean.pickle','r
 
 # only take references used in paper and apply the transformations we want
 db = bib_database.entries_dict
-bib_database.entries = [mycustom(db[key]) for key in cites if key in db]
+bib_database.entries = [mycustom(db[key]) for key in sorted(cites) if key in db]
 bib_database._entries_dict = {}
 
 if refbib:
     with open(refbib) as f:
         refbibdb = bibtexparser.load(f)
     # this will merge the two bibtex files, with refbibdb having precedence
+    extra_entries = [entry["ID"] for entry in refbibdb.entries if entry["ID"] not in cites]
+    if extra_entries:
+        print(warn_str, "entries in reference bibliography not cited in tex files:", *sorted(extra_entries))
     for entry in bib_database.entries:
         if entry["ID"] not in refbibdb.entries_dict:
             refbibdb.entries.append(entry)
         else:
-            print(warn_str, f"entry already in reference bibliograph {refbib}:", entry["ID"])
+            print(warn_str, f"entry already in reference bibliography {refbib}:", entry["ID"])
     bib_database = refbibdb
 
 missing_entries = cites - set(bib_database.entries_dict.keys())
