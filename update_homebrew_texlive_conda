@@ -1,17 +1,16 @@
 #!/bin/zsh -i
 # -i ensures that "omz" function from oh-my-zsh is available
 
+CONFIRM=true
+[[ "$1" == "--run-all" ]] && CONFIRM=false
+
 prompt_run () {
     echo ">> $@" >&2
     eval "$@"
 }
 
-if [[ "$1" == "--run-all" ]]; then
-    confirm_run () {
-        prompt_run "$@"
-    }
-else
-    confirm_run () {
+confirm_run () {
+    if [[ "$CONFIRM" = "true" ]]; then
         prompt="Run '$@'? [Y/n] "
         typeset -l response # forces $response to be lower-case in zsh
         read "response?$prompt"
@@ -20,8 +19,10 @@ else
             prompt_run "$@"
             ;;
         esac
-    }
-fi
+    else
+        prompt_run "$@"
+    fi
+}
 
 prompt_run omz update
 echo
