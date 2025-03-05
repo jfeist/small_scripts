@@ -14,7 +14,11 @@ parser.add_argument('-s','--server', help='Overleaf server', default='https://ww
 parser.add_argument('-e','--extract', help='Extract zips', action='store_true')
 parser.add_argument('--download-trashed', help='Download trashed projects', action='store_true')
 parser.add_argument('-p','--project', help='Download specific project (by id). Can be given multiple times.', action='append')
+parser.add_argument('--extract-to-current', help='Extract zips to current directory', action='store_true')
 args = parser.parse_args()
+
+if args.extract_to_current:
+    args.extract = True
 
 if 'overleaf.com' in args.server:
     cookie_name = 'overleaf_session2'
@@ -41,7 +45,10 @@ for p in projects:
     
     if args.extract:
         with ZipFile(io.BytesIO(req.content), 'r') as z:
-            z.extractall(p["name"])
+            if args.extract_to_current:
+                z.extractall()
+            else:
+                z.extractall(p["name"])
         print(f'downloaded and extracted {p["id"]}: {p["name"]}')
     else:
         with open(f'{p["name"]}.zip', 'wb') as f:
