@@ -8,12 +8,12 @@ import json
 import io
 from zipfile import ZipFile
 
-parser = argparse.ArgumentParser(description='Download all projects from Overleaf.')
-parser.add_argument('cookie', help='Session cookie for Overleaf')
+parser = argparse.ArgumentParser(description="Download projects from Overleaf. Requires a session cookie that you can get from your browser, e.g., with the developer tools. In Chrome, go to the Overleaf project page, open the developer tools, go to the 'Application' tab, find the cookies in 'Storage' on the left, and copy the value of the 'overleaf_session2' cookie if you are on overleaf.com, or of the 'overleaf.sid' cookie if you are on a different server. This program will download all projects by default. Use the --project option to download only specific projects.")
+parser.add_argument('cookie', help='Session cookie for Overleaf (get value from browser)')
 parser.add_argument('-s','--server', help='Overleaf server', default='https://www.overleaf.com')
 parser.add_argument('-e','--extract', help='Extract zips', action='store_true')
-parser.add_argument('--download-trashed', help='Download trashed projects', action='store_true')
-parser.add_argument('-p','--project', help='Download specific project (by id). Can be given multiple times.', action='append')
+parser.add_argument('--download-trashed', help='Also download trashed projects', action='store_true')
+parser.add_argument('-p','--project', help='Download only a specific project (by id). Can be given multiple times.', action='append')
 parser.add_argument('--extract-to-current', help='Extract zips to current directory', action='store_true')
 args = parser.parse_args()
 
