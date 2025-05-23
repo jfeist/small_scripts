@@ -34,6 +34,4 @@ confirm_run brew autoremove
 echo
 confirm_run sudo tlmgr update --self --all
 echo
-confirm_run conda update -n base --all
-echo
-confirm_run conda update --all
+confirm_run "(cd $VIRTUAL_ENV/.. && uv sync --upgrade)"
