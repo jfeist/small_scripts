@@ -7,9 +7,9 @@ set -e
 
 depfile=LATEX_DEPENDENCIES
 
-latexmk -deps-out=${depfile} "$@" > /dev/null
+latexmk -deps-out="${depfile}" "$@" > /dev/null
 
-targets=$(make -qp -f ${depfile} | awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' | sort -u | grep -v -e "${depfile}" -e '.*Notes.bib')
+targets=$(make -qp -f "${depfile}" | awk -F':' '/^[a-zA-Z0-9][^$#\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' | sort -u | grep -v -e "${depfile}" -e '.*Notes.bib')
 
 texpdfs=$(grep '\.tex$' <<< "$targets" | sed 's/\.tex$/.pdf/')
 
