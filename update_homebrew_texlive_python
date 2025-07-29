@@ -35,3 +35,5 @@ echo
 confirm_run sudo tlmgr update --self --all
 echo
 confirm_run "(cd $VIRTUAL_ENV/.. && uv sync --upgrade)"
+echo
+confirm_run juliaup update
