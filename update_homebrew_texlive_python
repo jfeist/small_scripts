@@ -24,8 +24,6 @@ confirm_run () {
     fi
 }
 
-prompt_run omz update
-echo
 prompt_run brew upgrade
 echo
 prompt_run brew autoremove --dry-run
