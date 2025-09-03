@@ -2,7 +2,6 @@
 from __future__ import print_function
 import sys, io
 from nbformat import read
-from IPython.utils.text import strip_ansi
 from IPython.display import display
 import json
 
