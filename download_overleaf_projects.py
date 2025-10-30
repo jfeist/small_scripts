@@ -37,6 +37,10 @@ if args.project:
 elif not args.download_trashed:
     projects = [p for p in projects if not p["trashed"]]
 
+if args.project and not len(projects) == len(args.project):
+    for p in set(args.project) - set([p["id"] for p in projects]):
+        print(f'Error downloading project {p}: not found in project list.')
+    
 for p in projects:
     req = requests.get(f'{args.server}/project/{p["id"]}/download/zip', cookies=cookies)
     if req.status_code != 200:
